@@ -2,22 +2,28 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Final Exam Warm-Up &middot; Private</title>
 <style>
-:root{--navy:#0b2545;--navy2:#13315c;--brass:#b78a3f;--bg:#f7f3ea}
-body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--navy);font-size:17px;line-height:1.5}
-header{background:var(--navy);color:#f2e8d5;padding:16px}
-h1{margin:0;font-size:22px;letter-spacing:1px}
-.sub{font-size:13.5px;opacity:.85;margin-top:4px}
-.card{max-width:520px;margin:48px auto;background:#fff;border:1px solid #d8d2c4;border-radius:16px;padding:26px 22px;box-shadow:0 8px 24px rgba(11,37,69,.12)}
-.lock{font-size:40px;text-align:center}
-p.msg{text-align:center;font-size:17px;margin:10px 0 18px}
-p.notice{text-align:center;font-size:13.5px;line-height:1.55;color:#41506b;background:#eef2f9;border:1px solid #c9d4e8;border-radius:10px;padding:10px 12px;margin:0 0 16px}
-input[type=password]{width:100%;box-sizing:border-box;font-size:18px;padding:13px 12px;border:1.5px solid var(--brass);border-radius:12px;font-family:inherit}
-button{width:100%;margin-top:12px;background:var(--navy2);color:#f2e8d5;border:2px solid var(--brass);border-radius:12px;padding:14px;font-family:inherit;font-size:16px;font-weight:bold;letter-spacing:.6px;cursor:pointer}
-button:active{transform:scale(.98)}
-label{display:flex;gap:8px;align-items:center;font-size:14px;margin-top:12px;color:#555}
-.err{display:none;background:#FBEAEA;border:1px solid #C97B7B;border-radius:10px;padding:10px 12px;margin-top:12px;font-size:14.5px;color:#7a1f1f}
-.busy{display:none;text-align:center;margin-top:12px;font-size:15px}
+*{box-sizing:border-box}html{background:#F3F6F9}
+body{margin:0;background:#F3F6F9;color:#122A3E;font:16px/1.55 Inter,ui-sans-serif,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;display:grid;place-items:center;padding:18px}
+.sky{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.sky svg{position:absolute;fill:none;stroke:#1B70DC;stroke-width:1.4;opacity:.055}
+.sky .p1{width:520px;height:520px;top:-60px;right:-120px;transform:rotate(-14deg)}
+.sky .p2{width:300px;height:300px;bottom:-40px;left:-80px;transform:rotate(9deg);opacity:.045}
+.wrap,.gate{position:relative;width:100%;max-width:430px;background:#fff;border:1px solid #DBE4EC;border-radius:20px;padding:26px 22px;box-shadow:0 18px 44px rgba(16,42,67,.10)}
+h1{margin:0 0 2px;font-size:21px;font-weight:800;color:#0C2941;letter-spacing:-.015em}
+.sub{font-size:11.5px;color:#607587;letter-spacing:.16em;text-transform:uppercase;margin-bottom:16px}
+input[type=password],input[type=text]{width:100%;border:1.5px solid #C5D2DD;border-radius:14px;padding:15px 16px;font-size:17px;font-family:inherit;color:#122A3E;background:#F7F9FC;outline:none}
+input:focus{border-color:#1B70DC}
+button{width:100%;margin-top:12px;border:0;border-radius:14px;padding:16px;min-height:56px;font-size:16px;font-weight:700;font-family:inherit;color:#fff;cursor:pointer;
+ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23ffffff' fill-opacity='.12' d='M50 12 L54 40 L88 58 L88 64 L54 54 L53 74 L64 82 L64 86 L50 82 L36 86 L36 82 L47 74 L46 54 L12 64 L12 58 L46 40 Z'/%3E%3C/svg%3E") right 16px center/40px no-repeat,linear-gradient(112deg,#0F3550,#155A78);box-shadow:0 12px 26px rgba(15,53,80,.3)}
+button:active{filter:brightness(1.12)}
+#err,.err{display:none;margin-top:10px;color:#B33E48;background:#FDECEE;border:1px solid #E4B7BC;border-radius:12px;padding:10px 12px;font-size:14px}
+label,.row{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13.5px;color:#607587}
+label input,.row input{width:auto}
+.stmt,.note,p{margin-top:16px;font-size:12px;line-height:1.6;color:#8CA0B3}
+.prog,#dl{margin-top:10px;font-size:12.5px;color:#607587;text-align:center}
+
 </style></head><body>
+<div class="sky" aria-hidden="true"><svg class="p1" viewBox="0 0 100 100"><path d="M50 12 L54 40 L88 58 L88 64 L54 54 L53 74 L64 82 L64 86 L50 82 L36 86 L36 82 L47 74 L46 54 L12 64 L12 58 L46 40 Z"/></svg><svg class="p2" viewBox="0 0 100 100"><path d="M50 12 L54 40 L88 58 L88 64 L54 54 L53 74 L64 82 L64 86 L50 82 L36 86 L36 82 L47 74 L46 54 L12 64 L12 58 L46 40 Z"/></svg></div>
 <header><h1>FINAL EXAM WARM-UP</h1><div class="sub">Private study site</div></header>
 <div class="card">
  <div class="lock">&#128274;</div>
@@ -33,7 +39,7 @@ label{display:flex;gap:8px;align-items:center;font-size:14px;margin-top:12px;col
 </div>
 <script>
 self.APP_V=37;
-const CFG={salt:"vLCv1aaTs8BlFDT3fuKRDg==",iter:310000,vct:"/XhznbcplgToaVcsFaQ5qiVwW/F06AvhQiw1PDuF",app:"app_v37.enc"};
+const CFG={salt:"O7OeDPqc/lFPJBZndLTwFA==",iter:310000,vct:"yBfmErNk/FtvSN9dH/T45qdi8SIcg1st13TFyhoO",app:"app_v43.enc"};
 function b(x){return Uint8Array.from(atob(x),c=>c.charCodeAt(0));}
 try{
  if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});});}
@@ -52,7 +58,7 @@ function __dlNote(){
  }catch(e){}
 }
 function startDownload(){
- fetch(CFG.app).then(function(r){
+ fetch(CFG.app,{cache:'no-store'}).then(function(r){
  if(!r.ok)throw 0;
  var total=+((r.headers&&r.headers.get)?r.headers.get('Content-Length'):0)||0, got=0, chunks=[], rd=(r.body&&r.body.getReader)?r.body.getReader():null;
  if(!rd){return r.arrayBuffer();}
