@@ -120,7 +120,7 @@ async function go(){
   const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:b(CFG.salt),iterations:CFG.iter,hash:'SHA-256'},km,256);
   const key=await verifyKey(bits);
   try{sessionStorage.setItem('twq_k', btoa(String.fromCharCode.apply(null,new Uint8Array(bits))));}catch(e){}
-  try{if(document.getElementById('rm')&&document.getElementById('rm').checked)localStorage.setItem('twq_pw',pw);}catch(e){}
+  try{if(document.getElementById('rm')&&document.getElementById('rm').checked)localStorage.setItem('twq_rk', btoa(String.fromCharCode.apply(null,new Uint8Array(bits))));else localStorage.removeItem('twq_rk');}catch(e){}
   await proceed(key);
  }catch(e){
   bz.style.display='none';
@@ -140,17 +140,26 @@ async function sessionUnlock(){
   try{document.getElementById('busy').style.display='none';}catch(_){}
  }
 }
-function __autoPw(){
+async function __autoRk(){
  try{
-  const saved=localStorage.getItem('twq_pw');
-  if(saved){document.getElementById('pw').value=saved; go();}
- }catch(e){}
+  try{localStorage.removeItem('twq_pw');}catch(_){}
+  const kb=localStorage.getItem('twq_rk'); if(!kb)return;
+  var bz=document.getElementById('busy');
+  bz.style.display='block'; bz.innerHTML='&#128275; Unlocking&hellip;';
+  const raw=Uint8Array.from(atob(kb),c=>c.charCodeAt(0));
+  const key=await verifyKey(raw.buffer.slice(raw.byteOffset,raw.byteOffset+raw.length));
+  try{sessionStorage.setItem('twq_k', kb);}catch(_){}
+  await proceed(key);
+ }catch(e){
+  try{localStorage.removeItem('twq_rk');}catch(_){}
+  try{document.getElementById('busy').style.display='none';}catch(_){}
+ }
 }
 document.getElementById('go').addEventListener('click',go);
 document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')go();});
 try{startDownload();}catch(e){__dl.state='error'; try{__dlNote()}catch(_){}}
 if(document.readyState==='loading'){
  document.addEventListener('DOMContentLoaded',sessionUnlock);
- document.addEventListener('DOMContentLoaded',__autoPw);
-}else{sessionUnlock();__autoPw();}
+ document.addEventListener('DOMContentLoaded',__autoRk);
+}else{sessionUnlock();__autoRk();}
 </script></body></html>
