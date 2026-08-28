@@ -1,0 +1,5 @@
+{
+ "epoch": 44,
+ "revokeAll": false,
+ "note": "bump epoch to force everyone to re-enter password; set revokeAll true to block all devices"
+}
