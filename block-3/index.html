@@ -39,7 +39,7 @@ label input,.row input{width:auto}
 </div>
 <script>
 self.APP_V=37;
-const CFG={salt:"O7OeDPqc/lFPJBZndLTwFA==",iter:310000,vct:"yBfmErNk/FtvSN9dH/T45qdi8SIcg1st13TFyhoO",app:"app_v44.enc"};
+const CFG={salt:"O7OeDPqc/lFPJBZndLTwFA==",iter:310000,vct:"yBfmErNk/FtvSN9dH/T45qdi8SIcg1st13TFyhoO",app:"app_v45.enc"};
 function b(x){return Uint8Array.from(atob(x),c=>c.charCodeAt(0));}
 try{
  if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});});}
@@ -103,6 +103,7 @@ function showCorrectWait(){
  if(bz){bz.style.display='block';bz.innerHTML='<b>&#128275; Password correct</b> &mdash; loading quiz&hellip; <b><span id="lqPct">'+__dl.pct+'%</span></b>';}
 }
 async function proceed(key){
+ if(twqBlocked()){twqRevoke();return;}
  if(__dl.state==='ready'&&__dl.bytes){await decryptApp(key);}
  else if(__dl.state==='error'){
   var bz=document.getElementById('busy');
@@ -120,18 +121,38 @@ function twqBlock(reason){try{localStorage.setItem('twq_blocked','1')}catch(e){}
  '<p style="color:#8CA0B3;font-size:12.5px;margin-top:14px">This device can no longer open the study site.</p></div>';}
 async function twqFp(pw){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('blk1|'+pw));
  return btoa(String.fromCharCode.apply(null,new Uint8Array(h)));}
-async function twqManifest(){
- try{const r=await fetch('k.json',{cache:'no-store'}); if(!r.ok)return;
-  const m=await r.json();
-  if(m.revokeAll){twqBlock('The owner ended all sessions.');return true;}
+let __mf=null;
+function twqManifest(){
+ if(__mf)return __mf;
+ __mf=(async function(){
+  let m=null;
+  for(let a=0;a<2;a++){
+   try{
+    const ctl=('AbortController' in window)?new AbortController():null;
+    const to=setTimeout(function(){try{ctl&&ctl.abort()}catch(e){}},7000);
+    const r=await fetch('k.json?t='+Date.now()+'.'+Math.random(),{cache:'no-store',signal:ctl?ctl.signal:undefined});
+    clearTimeout(to);
+    if(r.ok){m=await r.json();break;}
+   }catch(e){}
+  }
+  if(!m)return {ok:false,revoked:false};
+  if(m.revokeAll){twqRevoke();return {ok:true,revoked:true};}
   let ep=0; try{ep=parseInt(localStorage.getItem('twq_ep')||'0',10)}catch(e){}
-  if((m.epoch||0)>Math.max(ep,EPOCH)-0 && (m.epoch||0)>ep){
+  const me=m.epoch||0;
+  if(me>ep){
    try{localStorage.removeItem('twq_rk')}catch(e){}
    try{sessionStorage.removeItem('twq_k')}catch(e){}
-   try{localStorage.setItem('twq_ep',String(m.epoch))}catch(e){}
+   try{localStorage.setItem('twq_ep',String(me))}catch(e){}
+   return {ok:true,revoked:false,bumped:true};
   }
- }catch(e){}
- return false;
+  return {ok:true,revoked:false,bumped:false};
+ })();
+ return __mf;
+}
+function twqRevoke(){
+ try{localStorage.removeItem('twq_rk')}catch(e){}
+ try{sessionStorage.removeItem('twq_k')}catch(e){}
+ twqBlock('The owner ended all sessions for this site.');
 }
 
 async function go(){
@@ -139,6 +160,8 @@ async function go(){
  if(!pw)return;
  if(twqBlocked()){twqBlock('This device used a retired password.');return;}
  try{ if(RETIRED.indexOf(await twqFp(pw))>=0){ twqBlock('The password you entered was retired by the owner.'); return; } }catch(e){}
+ try{ const mm=await twqManifest(); if(mm.revoked){twqRevoke();return;} }catch(e){}
+ if(twqBlocked()){return;}
  document.getElementById('err').style.display='none';
  const bz=document.getElementById('busy');
  bz.style.display='block'; bz.innerHTML='&#128274; Verifying your password&hellip;';
@@ -190,12 +213,19 @@ document.getElementById('pw').addEventListener('keydown',function(e){if(e.key===
 (function(){
  try{var u=new URLSearchParams(location.search).get('u');
   if(u&&u===UNBLOCK){try{localStorage.removeItem('twq_blocked')}catch(e){}}}catch(e){}
- if(twqBlocked()){twqBlock('This device used a retired password.');return;}
- twqManifest();
 })();
+async function bootAuth(){
+ if(twqBlocked()){twqBlock('This device used a retired password.');return;}
+ let m={ok:false,revoked:false};
+ try{ m=await twqManifest(); }catch(e){}
+ if(m.revoked){twqRevoke();return;}
+ if(!m.ok){ try{document.getElementById('busy').style.display='none'}catch(e){} return; }
+ if(twqBlocked())return;
+ await sessionUnlock();
+ if(twqBlocked())return;
+ await __autoRk();
+}
 try{startDownload();}catch(e){__dl.state='error'; try{__dlNote()}catch(_){}}
-if(document.readyState==='loading'){
- document.addEventListener('DOMContentLoaded',sessionUnlock);
- document.addEventListener('DOMContentLoaded',__autoRk);
-}else{sessionUnlock();__autoRk();}
+if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',bootAuth); }
+else{ bootAuth(); }
 </script></body></html>
